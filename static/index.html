@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>URLShortener</title>
+</head>
+<body style="background-color: #F5F7FA;">
+    <main>
+        <form class="col-md-6 col-md-offset-3 p-5 mt-5" style="background-color: #FFF;">
+            <h2 id="title">URL Shortener</h2>
+            <p id="server-error" class="text-danger"></p>
+            <div id="send-form">
+                <div class="mb-3">
+                    <label for="longurl" class="form-label">Your link</label>
+                    <input type="text" class="form-control" name="longurl" id="longurl" placeholder="Enter the link here">
+                    <div id="validationServer05Feedback" class="invalid-feedback">
+                      Please provide a valid URL.
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="shorturl" class="form-label">URL convert to</label>
+                    <input type="text" class="form-control" name="shorturl" id="shorturl" placeholder="Short URL">
+                    <div id="validationServer05Feedback" class="invalid-feedback">
+                      Please choose a URL convert to.
+                    </div> 
+                  </div>
+                  <input type="button" value="Create" class="btn btn-primary" onclick="create()">
+            </div>
+          </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+</html>
+
+<script>
+    function create() {
+        document.getElementById("longurl").classList.remove("is-invalid");
+        document.getElementById("longurl").classList.remove("is-invalid");
+        document.getElementById("server-error").innerHTML = "";
+        longURL = document.getElementById("longurl").value;
+        shortURL = document.getElementById("shorturl").value;
+        if (longURL == '') {
+            document.getElementById("longurl").classList.add("is-invalid");
+            return;
+        }
+        if (shortURL == '') {
+            document.getElementById("shorturl").classList.add("is-invalid");
+            return;
+        }
+
+        axios.post('/create', {
+        long_url: longURL,
+        short_url: shortURL
+        })
+        .then(function (response) {
+            document.getElementById("title").innerHTML = "<h2>Your shortened URL</h2>";
+            document.getElementById("send-form").innerHTML = 
+                `<input type="text" class="form-control" value=${window.location.host + "/" + shortURL}><br>` +
+                `<p>The long URL is: <a href="${longURL}">${longURL}</a></p>`;
+        })
+        .catch(function (error) {
+            if (error.response) {
+                document.getElementById("server-error").innerHTML = "This short URL already taken";
+                console.log(error);
+            } else if (error.request) {
+                document.getElementById("server-error").innerHTML = "Server is dead";
+            } else {
+                document.getElementById("server-error").innerHTML = error.message;
+            }
+        });
+        }
+</script>
+

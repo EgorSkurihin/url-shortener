@@ -1,0 +1,5 @@
+CREATE TABLE URL(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    short_url VARCHAR(255) UNIQUE,
+    long_url VARCHAR(255)
+);
