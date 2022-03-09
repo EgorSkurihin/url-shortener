@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  app:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 8181:8181
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 232323
+      MYSQL_DATABASE: url_shortener
+    command: 
+      mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - "./create_db.sql:/docker-entrypoint-initdb.d/1.sql"
